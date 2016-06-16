@@ -1,0 +1,147 @@
+<!doctype html>
+<html ng-app="app">
+  <head>
+    <title>task-9</title>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script type="text/javascript" src="vendor/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="vendor/js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/controllers/user-ctrl.js"></script>
+    <script type="text/javascript" src="js/services/data-service.js"></script>
+    <script type="text/javascript" src="js/filters/telephone-filter.js"></script>
+    <script type="text/javascript" src="js/filters/gender-filter.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+  <body>
+    <div ng-controller="UserCtrl">
+      <div>
+        <button class="btn btn-success" data-toggle="modal" data-target="#addUser">Add new user</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="addUserLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addUserLabel">Please fill next fields</h4>
+              </div>
+              <div class="modal-body">
+                <form name="userForm" ng-model="user">
+                  <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="firstname" ng-model="user.firstname" class="form-control" ng-minlength="2" required>
+                    <span class="help-block" ng-show="userForm.firstname.$error.minlength && !userForm.firstname.$pristine">first name should contain at least 2 symbols</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="lastname" ng-model="user.lastname" class="form-control" ng-minlength="2" required>
+                    <span class="help-block" ng-show="userForm.lastname.$error.minlength && !userForm.lastname.$pristine">last name should contain at least 2 symbols</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" ng-model="user.age" class="form-control" ng-pattern="/^[1-9][0-9]?$/" required>
+                    <span class="help-block" ng-show="userForm.age.$invalid && !userForm.age.$pristine">age should be from 1 to 99</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender" ng-model="user.gender" class="form-control" required>
+                      <option disabled selected value hidden>select an option</option>
+                      <option value="m">male</option>
+                      <option value="f">female</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Country</label>
+                    <input type="text" name="country" ng-model="user.country" class="form-control" required>
+                    <span class="help-block" ng-show="userForm.country.$error.required && !userForm.country.$pristine">country should be filled</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Phone</label>
+                    <input name="phone" ng-model="user.phone" class="form-control" ng-pattern="/((\(\d{3}\) ?))\d{3}-\d{4}$/" required>
+                    <span class="help-block" ng-show="userForm.phone.$invalid && !userForm.phone.$pristine">phone should have correct format: (xxx) xxx-xxxx</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" ng-model="user.email" class="form-control" required>
+                    <span class="help-block" ng-show="userForm.email.$invalid && !userForm.email.$pristine">email should be correct</span>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" ng-disabled="userForm.$invalid" ng-click="addUser(user)">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>
+              <span class="pointer" ng-click="order('firstname')">firstname</span>
+              <span class="sortorder" ng-show="predicate === 'firstname'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.firstname">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('lastname')">lastname</span>
+              <span class="sortorder" ng-show="predicate === 'lastname'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.lastname">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('age')">age</span>
+              <span class="sortorder" ng-show="predicate === 'age'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.age">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('gender')">gender</span>
+              <span class="sortorder" ng-show="predicate === 'gender'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.gender">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('country')">country</span>
+              <span class="sortorder" ng-show="predicate === 'country'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.country">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('phone')">phone</span>
+              <span class="sortorder" ng-show="predicate === 'phone'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.phone">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('email')">email</span>
+              <span class="sortorder" ng-show="predicate === 'email'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.email">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('joindate')">joindate</span>
+              <span class="sortorder" ng-show="predicate === 'joindate'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.joindate">
+            </th>
+            <th>
+              <span class="pointer" ng-click="order('balance')">balance</span>
+              <span class="sortorder" ng-show="predicate === 'balance'" ng-class="{reverse:reverse}"></span>
+              <input type="text" ng-model="search.balance">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in users | filter:search">
+            <td>{{user.firstname | uppercase}}</td>
+            <td>{{user.lastname | uppercase}}</td>
+            <td>{{user.age}}</td>
+            <td>{{user.gender | full}}</td>
+            <td>{{user.country}}</td>
+            <td>{{user.phone| tel}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.joindate | date: 'fullDate'}}</td>
+            <td>{{user.balance | currency}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
